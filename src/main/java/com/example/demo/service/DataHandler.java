@@ -72,24 +72,34 @@ public class DataHandler {
 
     private void storageDataHandler(List<String[]> records){
         for (String[] record : records) {
+            // To make sure the Qty must be positive number
+            if (Integer.parseInt(record[1]) > 0) {
+                // To make sure that location name and product code are existed in database location and product
+                // In order to save the useful data from csv
+                List<Product> productList = productRepository.findByCode(record[0]);
+                List<Location> locationList = locationRepository.findByName(record[2]);
 
-            List<Product> productList = productRepository.findByCode(record[0]);
-            List<Location> locationList = locationRepository.findByName(record[2]);
+                if (!productList.isEmpty() && !locationList.isEmpty()) {
 
-            // To make sure that location name and product code are existed in database location and product
-            // In order to save the useful data from csv
-            if(!productList.isEmpty() && !locationList.isEmpty()) {
+                    List<Storage> storageList = storageRepository.findByCodeAndLocation(record[0], record[2]);
 
-                List<Storage> storageList = storageRepository.findByCodeAndLocation(record[0],record[2]);
-                //store the data into database
-                if(storageList.isEmpty()){
-                    storageRepository.save(new Storage(record[0], Integer.parseInt(record[1]), record[2]));
-                }
-                else {
-                    
+                    if (storageList.isEmpty()) {
+                        //store the data into database if the data is not existed in database
+                        storageRepository.save(new Storage(record[0], Integer.parseInt(record[1]), record[2]));
+                    } else {
+                        //update the data into database if the data is existed in database
+                        Integer initialQty = storageList.get(0).getQty();
+                        Integer addQty = Integer.parseInt(record[1]);
+                        AddStorageNumber(initialQty, addQty, storageList.get(0));
+                    }
                 }
             }
         }
+    }
+
+    private void AddStorageNumber(Integer initialQty, Integer addQty, Storage existStorage){
+        existStorage.setQty(initialQty+addQty);
+        storageRepository.save(existStorage);
     }
 
 
