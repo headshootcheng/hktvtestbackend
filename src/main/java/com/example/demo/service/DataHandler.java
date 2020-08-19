@@ -29,6 +29,17 @@ public class DataHandler {
     StorageRepository storageRepository;
 
 
+    public Message addNewLocation (String newLocationName){
+        List<Location> locationList = locationRepository.findByName(newLocationName);
+        if(!locationList.isEmpty()){
+            return new Message(0,"This location is already existed");
+        }
+        else{
+            locationRepository.save(new Location(newLocationName));
+            return  new Message(1,"Added to database");
+        }
+    }
+
     public Message handleCSVFile(MultipartFile file, String type){
         if (file.isEmpty()) {
             return new Message(0,"The file is empty!!!!");

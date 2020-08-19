@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+import com.example.demo.modal.Location;
 import com.example.demo.modal.Message;
 import com.example.demo.service.DataHandler;
 
@@ -10,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
@@ -28,6 +30,11 @@ public class ApiController {
     @PostMapping("/uploadProduct")
     public Message uploadProductInfo(@RequestParam("file") MultipartFile file){
         return dataHandler.handleCSVFile(file,"product");
+    }
+
+    @PostMapping("/addNewLocation")
+    public Message uploadProductInfo(@RequestBody Map<String,String> data){
+        return dataHandler.addNewLocation(data.get("data"));
     }
 
     @PostMapping("/manageProduct")
