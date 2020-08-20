@@ -13,12 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+//solve CORS issue
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 public class ApiController {
 
+    //using the function from service
     @Autowired
     private DataHandler dataHandler;
 
+    //using the function from respository
     @Autowired
     ProductRepository productRepository;
 

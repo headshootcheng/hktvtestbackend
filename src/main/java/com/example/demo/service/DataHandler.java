@@ -157,7 +157,7 @@ public class DataHandler {
         //Check whether the product is already existed in destination or not
         if(inStorage(productId,toLocation)){
             // Add the qty to destination
-            Storage destinationStorage= storageRepository.findByCodeAndLocation(productId,toLocation).get(0);
+            Storage destinationStorage = storageRepository.findByCodeAndLocation(productId,toLocation).get(0);
             Integer initialDestinationQty = destinationStorage.getQty();
             AddStorageNumber(initialDestinationQty,qty,destinationStorage);
         }

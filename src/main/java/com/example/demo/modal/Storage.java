@@ -3,17 +3,17 @@ package com.example.demo.modal;
 import javax.persistence.*;
 
 @Entity
-@Table(name="hktv_storage")
+@Table(name = "hktv_storage")
 public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="storage_id")
     private int id;
-    @Column(name="product_code")
+    @Column(name = "product_code")
     private String code;
-    @Column(name="product_qty")
+    @Column(name = "product_qty")
     private Integer qty;
-    @Column(name="location_name")
+    @Column(name = "location_name")
     private String location;
 
     public Storage() {

@@ -3,14 +3,14 @@ package com.example.demo.modal;
 import javax.persistence.*;
 
 @Entity
-@Table(name="hktv_location")
+@Table(name = "hktv_location")
 public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name="location_name")
+    @Column(name = "location_name")
     private String name;
 
     public Location() {
