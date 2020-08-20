@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.modal.Location;
-import com.example.demo.modal.Message;
-import com.example.demo.modal.Product;
-import com.example.demo.modal.Storage;
+import com.example.demo.modal.*;
 import com.example.demo.respository.LocationRepository;
 import com.example.demo.respository.ProductRepository;
 import com.example.demo.respository.StorageRepository;
@@ -69,6 +66,25 @@ public class DataHandler {
         }
     }
 
+    public Message handleTransit(TransitRequest transitRequest){
+        Integer qty = transitRequest.getQty();
+        String productId = transitRequest.getProductId();
+        String fromlocation = transitRequest.getFromLocation();
+        String toLocation = transitRequest.getToLocation();
+        if(inStorage(productId,fromlocation)){
+            // check whether the qty is reasonable or not
+            if(qtyOverLimit(qty,productId,fromlocation)){
+                return new Message(0,"Qty is over the limit!!!");
+            }
+            transitAction(qty,productId,fromlocation,toLocation);
+            return new Message(1,"Transit success!!!");
+        }else {
+            return new Message(0,"This data doesn't exist!!!");
+        }
+    }
+
+
+
     private void productDataHandler(List<String[]> records){
         for (String[] record : records) {
             //Check whether the product code is existed in database  or not as it is a unique/primary key for the product
@@ -92,13 +108,12 @@ public class DataHandler {
 
                 if (!productList.isEmpty() && !locationList.isEmpty()) {
 
-                    List<Storage> storageList = storageRepository.findByCodeAndLocation(record[0], record[2]);
-
-                    if (storageList.isEmpty()) {
+                    if (!inStorage(record[0],record[2])) {
                         //store the data into database if the data is not existed in database
                         storageRepository.save(new Storage(record[0], Integer.parseInt(record[1]), record[2]));
                     } else {
                         //update the data into database if the data is existed in database
+                        List<Storage> storageList = storageRepository.findByCodeAndLocation(record[0], record[2]);
                         Integer initialQty = storageList.get(0).getQty();
                         Integer addQty = Integer.parseInt(record[1]);
                         AddStorageNumber(initialQty, addQty, storageList.get(0));
@@ -107,15 +122,49 @@ public class DataHandler {
             }
         }
     }
+    private boolean inStorage( String productId, String location){
+        List<Storage> storageList = storageRepository.findByCodeAndLocation(productId,location);
+        if(storageList.isEmpty()){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    private boolean qtyOverLimit(Integer qty,String productId, String location){
+        List<Storage> storageList = storageRepository.findByCodeAndLocation(productId,location);
+        if(qty>storageList.get(0).getQty()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     private void AddStorageNumber(Integer initialQty, Integer addQty, Storage existStorage){
         existStorage.setQty(initialQty+addQty);
         storageRepository.save(existStorage);
     }
 
+    private void transitAction(Integer qty, String productId, String fromLocation, String toLocation){
+        Storage initialStorage = storageRepository.findByCodeAndLocation(productId,fromLocation).get(0);
+        Integer initialQty = initialStorage.getQty();
+        // remove the qty from original location
+        initialStorage.setQty(initialQty-qty);
+        storageRepository.save(initialStorage);
 
-
-
-
+        //Check whether the product is already existed in destination or not
+        if(inStorage(productId,toLocation)){
+            // Add the qty to destination
+            Storage destinationStorage= storageRepository.findByCodeAndLocation(productId,toLocation).get(0);
+            Integer initialDestinationQty = destinationStorage.getQty();
+            AddStorageNumber(initialDestinationQty,qty,destinationStorage);
+        }
+        else{
+            //Create new data to Storage database
+            storageRepository.save(new Storage(productId,qty,toLocation));
+        }
+    }
 
 }

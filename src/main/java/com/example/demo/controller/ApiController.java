@@ -1,8 +1,5 @@
 package com.example.demo.controller;
-import com.example.demo.modal.Location;
-import com.example.demo.modal.Message;
-import com.example.demo.modal.Option;
-import com.example.demo.modal.Product;
+import com.example.demo.modal.*;
 import com.example.demo.respository.LocationRepository;
 import com.example.demo.respository.ProductRepository;
 import com.example.demo.respository.StorageRepository;
@@ -60,6 +57,13 @@ public class ApiController {
         List<Product> productList = productRepository.findAll();
         List<Location> locationList = locationRepository.findAll();
         return new Option(productList,locationList);
+    }
+
+    //For the product transit
+    @PostMapping("/manageStorage")
+    public Message productTransit(@RequestBody TransitRequest transitRequest){
+        //System.out.println(transitRequest);
+        return dataHandler.handleTransit(transitRequest);
     }
 
 
