@@ -66,6 +66,12 @@ public class ApiController {
         return dataHandler.handleTransit(transitRequest);
     }
 
+    //For providing the storage information to front-end
+    @GetMapping("/provideStorage")
+    public List<Storage> provideStorage(){
+        return storageRepository.findAll();
+    }
+
 
 }
 
