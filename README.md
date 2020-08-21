@@ -3,12 +3,18 @@
 ## Environment
 MYSQL: version 8.0.17.  
 JAVA SE: version 14.0.1.   
-Recommended Compiler: IntelliJ Idea.
+Recommended Compiler: IntelliJ Idea.   
+Spring Boot: version 2.3.3. 
 
 ## Action:
 
 1. Create database and import the table (hktvtest.sql) to the database. 
 2. Edit the application properties to edit database source. 
-![螢幕截圖 2020-08-21 下午3 11 10](https://user-images.githubusercontent.com/46919822/90862926-c4035480-e3c0-11ea-8ea3-3cafd1e7fcf2.png). 
+![螢幕截圖 2020-08-21 下午3 11 10](https://user-images.githubusercontent.com/46919822/90862926-c4035480-e3c0-11ea-8ea3-3cafd1e7fcf2.png)
 3. Compile the DemoApplication. 
+![螢幕截圖 2020-08-21 下午3 16 15](https://user-images.githubusercontent.com/46919822/90863291-5f94c500-e3c1-11ea-8162-89e05ee3eeec.png)
+4. If you can compile successfully, you can see http://localhost:8080/hello to return hello 
+
+
+
 
